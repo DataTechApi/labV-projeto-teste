@@ -1,0 +1,11 @@
+/media/jackson/DEV/DEV/FATEC/MATERIAS/LABV/ATIVIDADE/trabalho zemestral/vendas-testing/src/main/java/com/fatec/vendas/exception/VendaException.java
+/media/jackson/DEV/DEV/FATEC/MATERIAS/LABV/ATIVIDADE/trabalho zemestral/vendas-testing/src/main/java/com/fatec/vendas/model/Cliente.java
+/media/jackson/DEV/DEV/FATEC/MATERIAS/LABV/ATIVIDADE/trabalho zemestral/vendas-testing/src/main/java/com/fatec/vendas/model/FormaPagamento.java
+/media/jackson/DEV/DEV/FATEC/MATERIAS/LABV/ATIVIDADE/trabalho zemestral/vendas-testing/src/main/java/com/fatec/vendas/model/ItemVenda.java
+/media/jackson/DEV/DEV/FATEC/MATERIAS/LABV/ATIVIDADE/trabalho zemestral/vendas-testing/src/main/java/com/fatec/vendas/model/Produto.java
+/media/jackson/DEV/DEV/FATEC/MATERIAS/LABV/ATIVIDADE/trabalho zemestral/vendas-testing/src/main/java/com/fatec/vendas/model/RegiaoEntrega.java
+/media/jackson/DEV/DEV/FATEC/MATERIAS/LABV/ATIVIDADE/trabalho zemestral/vendas-testing/src/main/java/com/fatec/vendas/model/TipoCliente.java
+/media/jackson/DEV/DEV/FATEC/MATERIAS/LABV/ATIVIDADE/trabalho zemestral/vendas-testing/src/main/java/com/fatec/vendas/model/Venda.java
+/media/jackson/DEV/DEV/FATEC/MATERIAS/LABV/ATIVIDADE/trabalho zemestral/vendas-testing/src/main/java/com/fatec/vendas/service/DescontoService.java
+/media/jackson/DEV/DEV/FATEC/MATERIAS/LABV/ATIVIDADE/trabalho zemestral/vendas-testing/src/main/java/com/fatec/vendas/service/FreteService.java
+/media/jackson/DEV/DEV/FATEC/MATERIAS/LABV/ATIVIDADE/trabalho zemestral/vendas-testing/src/main/java/com/fatec/vendas/service/VendaService.java

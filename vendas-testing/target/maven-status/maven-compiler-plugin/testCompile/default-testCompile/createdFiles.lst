@@ -1,0 +1,6 @@
+com/fatec/vendas/testing/ciclomatica/DescontoServiceTest.class
+com/fatec/vendas/testing/pairwise/PairwiseMatrix.class
+com/fatec/vendas/testing/integracao/VendaFluxoCompletoTest.class
+com/fatec/vendas/testing/ciclomatica/FreteServiceTest.class
+com/fatec/vendas/testing/ciclomatica/VendaServiceTest.class
+com/fatec/vendas/testing/pairwise/PairwiseVendaTest.class
