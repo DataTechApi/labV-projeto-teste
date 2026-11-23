@@ -1,0 +1,12 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+Vendas — Testes Tradicionais (SEM Pairwise / SEM Complexidade Ciclomática),com.fatec.vendas.service,DescontoService,0,89,0,14,0,18,0,10,0,3
+Vendas — Testes Tradicionais (SEM Pairwise / SEM Complexidade Ciclomática),com.fatec.vendas.service,VendaService,17,68,5,5,4,20,5,2,0,2
+Vendas — Testes Tradicionais (SEM Pairwise / SEM Complexidade Ciclomática),com.fatec.vendas.service,FreteService,10,65,2,10,0,18,2,7,0,3
+Vendas — Testes Tradicionais (SEM Pairwise / SEM Complexidade Ciclomática),com.fatec.vendas.model,Cliente,30,24,4,4,3,9,7,2,3,2
+Vendas — Testes Tradicionais (SEM Pairwise / SEM Complexidade Ciclomática),com.fatec.vendas.model,FormaPagamento,0,21,0,0,0,4,0,1,0,1
+Vendas — Testes Tradicionais (SEM Pairwise / SEM Complexidade Ciclomática),com.fatec.vendas.model,TipoCliente,0,21,0,0,0,4,0,1,0,1
+Vendas — Testes Tradicionais (SEM Pairwise / SEM Complexidade Ciclomática),com.fatec.vendas.model,ItemVenda,39,29,3,3,7,9,7,2,4,2
+Vendas — Testes Tradicionais (SEM Pairwise / SEM Complexidade Ciclomática),com.fatec.vendas.model,Produto,48,36,8,6,7,12,11,3,4,3
+Vendas — Testes Tradicionais (SEM Pairwise / SEM Complexidade Ciclomática),com.fatec.vendas.model,Venda,56,102,5,5,4,34,8,15,3,15
+Vendas — Testes Tradicionais (SEM Pairwise / SEM Complexidade Ciclomática),com.fatec.vendas.model,RegiaoEntrega,0,21,0,0,0,4,0,1,0,1
+Vendas — Testes Tradicionais (SEM Pairwise / SEM Complexidade Ciclomática),com.fatec.vendas.exception,VendaException,9,0,0,0,4,0,2,0,2,0

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FreteService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Vendas — Testes Tradicionais (SEM Pairwise / SEM Complexidade Ciclomática)</a> &gt; <a href="index.source.html" class="el_package">com.fatec.vendas.service</a> &gt; <span class="el_source">FreteService.java</span></div><h1>FreteService.java</h1><pre class="source lang-java linenums">package com.fatec.vendas.service;
+
+import com.fatec.vendas.model.RegiaoEntrega;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
+/**
+ * Serviço responsável por calcular o valor do frete de uma venda.
+ *
+ * ═══════════════════════════════════════════════════════════════════════════
+ * ANÁLISE DE COMPLEXIDADE CICLOMÁTICA — calcularFrete()
+ * ═══════════════════════════════════════════════════════════════════════════
+ *
+ * Grafo de Fluxo de Controle:
+ *
+ *        [N1] início
+ *          │
+ *          ▼
+ *        [N2] regiao == SUDESTE ?
+ *         Sim │                │ Não
+ *             ▼                ▼
+ *           [N3]             [N7] regiao == NORDESTE ?
+ *   valorBruto &gt; 300 ?        Sim │               │ Não (NORTE)
+ *         Sim │  │ Não            ▼               ▼
+ *             ▼  ▼              [N8]            [N10]
+ *           [N4][N5]     valorBruto &gt; 150 ?    frete = R$45
+ *          R$0  R$15      Sim │   │ Não
+ *             │   │           ▼   ▼
+ *             └───┘         [N9] [N11]
+ *               │          R$20  R$35
+ *               │            │   │
+ *               └─────┬──────┘   │
+ *                     └──────────┘
+ *                          │
+ *                        [N12] retorno
+ *
+ * Nós (N)   = 12
+ * Arestas(E) = 15
+ * Componentes Conexos (P) = 1
+ *
+ * CC = E - N + 2×P = 15 - 12 + 2 = 5
+ *
+ * Caminhos Independentes:
+ *   P1 — SUDESTE, valorBruto &gt; 300  → frete = R$  0,00 (grátis)
+ *   P2 — SUDESTE, valorBruto ≤ 300  → frete = R$ 15,00
+ *   P3 — NORDESTE, valorBruto &gt; 150 → frete = R$ 20,00
+ *   P4 — NORDESTE, valorBruto ≤ 150 → frete = R$ 35,00
+ *   P5 — NORTE                      → frete = R$ 45,00
+ * ═══════════════════════════════════════════════════════════════════════════
+ */
+<span class="fc" id="L52">public class FreteService {</span>
+
+<span class="fc" id="L54">    public static final BigDecimal FRETE_SUDESTE_GRATIS_MINIMO = new BigDecimal(&quot;300&quot;);</span>
+<span class="fc" id="L55">    public static final BigDecimal FRETE_NORDESTE_DESCONTO_MINIMO = new BigDecimal(&quot;150&quot;);</span>
+
+<span class="fc" id="L57">    public static final BigDecimal VALOR_SUDESTE_PADRAO  = new BigDecimal(&quot;15.00&quot;);</span>
+<span class="fc" id="L58">    public static final BigDecimal VALOR_NORDESTE_CHEIO  = new BigDecimal(&quot;35.00&quot;);</span>
+<span class="fc" id="L59">    public static final BigDecimal VALOR_NORDESTE_DESCONTO = new BigDecimal(&quot;20.00&quot;);</span>
+<span class="fc" id="L60">    public static final BigDecimal VALOR_NORTE           = new BigDecimal(&quot;45.00&quot;);</span>
+
+    /**
+     * Calcula o valor do frete com base na região e no valor bruto do pedido.
+     *
+     * &lt;p&gt;Regras:&lt;/p&gt;
+     * &lt;ul&gt;
+     *   &lt;li&gt;SUDESTE: grátis se valorBruto &amp;gt; R$ 300; caso contrário R$ 15&lt;/li&gt;
+     *   &lt;li&gt;NORDESTE: R$ 20 se valorBruto &amp;gt; R$ 150; caso contrário R$ 35&lt;/li&gt;
+     *   &lt;li&gt;NORTE: sempre R$ 45&lt;/li&gt;
+     * &lt;/ul&gt;
+     *
+     * @param regiao     região de entrega
+     * @param valorBruto valor bruto total dos itens
+     * @return valor do frete em BigDecimal
+     */
+    public BigDecimal calcularFrete(RegiaoEntrega regiao, BigDecimal valorBruto) {
+<span class="pc bpc" id="L77" title="1 of 2 branches missed.">        if (regiao == null)      throw new IllegalArgumentException(&quot;Região não pode ser nula&quot;);</span>
+<span class="pc bpc" id="L78" title="1 of 2 branches missed.">        if (valorBruto == null)  throw new IllegalArgumentException(&quot;Valor bruto não pode ser nulo&quot;);</span>
+
+        // ── [N2] SUDESTE ───────────────────────────────────────────────────
+<span class="fc bfc" id="L81" title="All 2 branches covered.">        if (regiao == RegiaoEntrega.SUDESTE) {                                 // E1</span>
+            // [N3] frete grátis acima de R$ 300
+<span class="fc bfc" id="L83" title="All 2 branches covered.">            if (valorBruto.compareTo(FRETE_SUDESTE_GRATIS_MINIMO) &gt; 0) {      // E2</span>
+<span class="fc" id="L84">                return BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP);      // N4 — P1</span>
+            }
+<span class="fc" id="L86">            return VALOR_SUDESTE_PADRAO;                                       // N5 — P2</span>
+        }
+
+        // ── [N7] NORDESTE ──────────────────────────────────────────────────
+<span class="fc bfc" id="L90" title="All 2 branches covered.">        if (regiao == RegiaoEntrega.NORDESTE) {                                // E5</span>
+            // [N8] desconto no frete acima de R$ 150
+<span class="fc bfc" id="L92" title="All 2 branches covered.">            if (valorBruto.compareTo(FRETE_NORDESTE_DESCONTO_MINIMO) &gt; 0) {   // E6</span>
+<span class="fc" id="L93">                return VALOR_NORDESTE_DESCONTO;                                // N9 — P3</span>
+            }
+<span class="fc" id="L95">            return VALOR_NORDESTE_CHEIO;                                       // N11 — P4</span>
+        }
+
+        // ── [N10] NORTE (default) ──────────────────────────────────────────
+<span class="fc" id="L99">        return VALOR_NORTE;                                                    // P5</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -1,0 +1,11 @@
+com/fatec/vendas/exception/VendaException.class
+com/fatec/vendas/service/VendaService.class
+com/fatec/vendas/service/DescontoService.class
+com/fatec/vendas/model/RegiaoEntrega.class
+com/fatec/vendas/model/Venda.class
+com/fatec/vendas/model/FormaPagamento.class
+com/fatec/vendas/model/Produto.class
+com/fatec/vendas/service/FreteService.class
+com/fatec/vendas/model/Cliente.class
+com/fatec/vendas/model/ItemVenda.class
+com/fatec/vendas/model/TipoCliente.class

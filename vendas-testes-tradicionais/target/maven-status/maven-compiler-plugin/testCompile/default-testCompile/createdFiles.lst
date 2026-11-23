@@ -1,0 +1,8 @@
+com/fatec/vendas/tradicional/BaseTesteTradicional.class
+com/fatec/vendas/tradicional/TesteTradicionalRegiaoTest.class
+com/fatec/vendas/tradicional/TesteTradicionalFreteTest.class
+com/fatec/vendas/tradicional/TesteTradicionalValorTest.class
+com/fatec/vendas/tradicional/TesteTradicionalTipoClienteTest.class
+com/fatec/vendas/tradicional/TesteTradicionalPagamentoTest.class
+com/fatec/vendas/tradicional/TesteTradicionalCombinacoesTest.class
+com/fatec/vendas/tradicional/TesteTradicionalDescontoTest.class

@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.fatec.vendas.tradicional.TesteTradicionalPagamentoTest
+-------------------------------------------------------------------------------
+Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.117 s -- in com.fatec.vendas.tradicional.TesteTradicionalPagamentoTest

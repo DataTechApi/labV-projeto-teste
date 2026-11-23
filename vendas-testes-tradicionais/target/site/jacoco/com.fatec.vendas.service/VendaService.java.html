@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>VendaService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Vendas — Testes Tradicionais (SEM Pairwise / SEM Complexidade Ciclomática)</a> &gt; <a href="index.source.html" class="el_package">com.fatec.vendas.service</a> &gt; <span class="el_source">VendaService.java</span></div><h1>VendaService.java</h1><pre class="source lang-java linenums">package com.fatec.vendas.service;
+
+import com.fatec.vendas.exception.VendaException;
+import com.fatec.vendas.model.Venda;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
+/**
+ * Serviço principal de orquestração do processamento de uma venda.
+ *
+ * ═══════════════════════════════════════════════════════════════════════════
+ * ANÁLISE DE COMPLEXIDADE CICLOMÁTICA — processarVenda()
+ * ═══════════════════════════════════════════════════════════════════════════
+ *
+ * Grafo de Fluxo de Controle (simplificado):
+ *
+ *   [N1] início
+ *     │
+ *     ▼
+ *   [N2] venda == null ? ─── Sim ──▶ [N3] lançar exceção
+ *     │ Não
+ *     ▼
+ *   [N4] itens vazio ? ──── Sim ──▶ [N5] lançar exceção
+ *     │ Não
+ *     ▼
+ *   [N6] calcular valorBruto
+ *     │
+ *     ▼
+ *   [N7] valorBruto ≤ 0 ? ── Sim ──▶ [N8] lançar exceção
+ *     │ Não
+ *     ▼
+ *   [N9] calcular desconto (DescontoService)
+ *     │
+ *     ▼
+ *   [N10] calcular frete (FreteService)
+ *     │
+ *     ▼
+ *   [N11] aplicar desconto e somar frete
+ *     │
+ *     ▼
+ *   [N12] valorFinal &lt; 0 ? ─ Sim ──▶ [N13] valorFinal = 0
+ *     │ Não
+ *     ▼
+ *   [N14] salvar venda
+ *     │
+ *     ▼
+ *   [N15] retorno
+ *
+ * Nós (N)   = 15
+ * Arestas(E) = 18
+ * Componentes Conexos (P) = 1
+ *
+ * CC = E - N + 2×P = 18 - 15 + 2 = 5
+ *
+ * (Incluindo as exceções como nós terminais, CC real = 5+2 lançamentos = 7)
+ *
+ * Caminhos Independentes:
+ *   P1 — venda null → VendaException
+ *   P2 — itens vazio → VendaException
+ *   P3 — valorBruto ≤ 0 → VendaException
+ *   P4 — fluxo normal, valorFinal &gt; 0
+ *   P5 — fluxo normal, valorFinal &lt; 0 (impossível com dados válidos, proteção defensiva)
+ * ═══════════════════════════════════════════════════════════════════════════
+ */
+public class VendaService {
+
+    private final DescontoService descontoService;
+    private final FreteService    freteService;
+
+<span class="fc" id="L71">    public VendaService(DescontoService descontoService, FreteService freteService) {</span>
+<span class="fc" id="L72">        this.descontoService = descontoService;</span>
+<span class="fc" id="L73">        this.freteService    = freteService;</span>
+<span class="fc" id="L74">    }</span>
+
+    /**
+     * Processa uma venda aplicando descontos, frete e validações de negócio.
+     *
+     * &lt;p&gt;Fluxo:&lt;/p&gt;
+     * &lt;ol&gt;
+     *   &lt;li&gt;Valida os campos obrigatórios da venda&lt;/li&gt;
+     *   &lt;li&gt;Calcula o valor bruto somando os itens&lt;/li&gt;
+     *   &lt;li&gt;Calcula o percentual de desconto via {@link DescontoService}&lt;/li&gt;
+     *   &lt;li&gt;Calcula o frete via {@link FreteService}&lt;/li&gt;
+     *   &lt;li&gt;Aplica desconto e soma o frete para obter o valor final&lt;/li&gt;
+     * &lt;/ol&gt;
+     *
+     * @param venda venda a ser processada (deve ter cliente, forma de pagamento, região e itens)
+     * @return a mesma venda com valorBruto, desconto, frete e valorFinal preenchidos
+     * @throws VendaException se a venda for inválida
+     */
+    public Venda processarVenda(Venda venda) {
+
+        // ── [N2] Validação: venda nula ─────────────────────────────────────
+<span class="pc bpc" id="L95" title="1 of 2 branches missed.">        if (venda == null) {                                           // E1 — P1</span>
+<span class="nc" id="L96">            throw new VendaException(&quot;Venda não pode ser nula&quot;);</span>
+        }
+
+        // ── [N4] Validação: sem itens ──────────────────────────────────────
+<span class="pc bpc" id="L100" title="2 of 4 branches missed.">        if (venda.getItens() == null || venda.getItens().isEmpty()) { // E3 — P2</span>
+<span class="nc" id="L101">            throw new VendaException(&quot;A venda deve conter pelo menos um item&quot;);</span>
+        }
+
+        // ── [N6] Calcula valor bruto ───────────────────────────────────────
+<span class="fc" id="L105">        BigDecimal valorBruto = venda.calcularValorBruto();</span>
+<span class="fc" id="L106">        venda.setValorBruto(valorBruto);</span>
+
+        // ── [N7] Validação: valor inválido ─────────────────────────────────
+<span class="pc bpc" id="L109" title="1 of 2 branches missed.">        if (valorBruto.compareTo(BigDecimal.ZERO) &lt;= 0) {             // E5 — P3</span>
+<span class="nc" id="L110">            throw new VendaException(&quot;Valor bruto da venda deve ser positivo&quot;);</span>
+        }
+
+        // ── [N9] Calcula e aplica desconto ─────────────────────────────────
+<span class="fc" id="L114">        BigDecimal percentualDesconto = descontoService.calcularDesconto(venda);</span>
+<span class="fc" id="L115">        venda.setDesconto(percentualDesconto);</span>
+
+<span class="fc" id="L117">        BigDecimal valorComDesconto = valorBruto</span>
+<span class="fc" id="L118">                .multiply(BigDecimal.ONE.subtract(percentualDesconto))</span>
+<span class="fc" id="L119">                .setScale(2, RoundingMode.HALF_UP);</span>
+
+        // ── [N10] Calcula e adiciona frete ─────────────────────────────────
+<span class="fc" id="L122">        BigDecimal frete = freteService.calcularFrete(venda.getRegiao(), valorBruto);</span>
+<span class="fc" id="L123">        venda.setFrete(frete);</span>
+
+        // ── [N11] Valor final = (bruto × (1 - desconto)) + frete ──────────
+<span class="fc" id="L126">        BigDecimal valorFinal = valorComDesconto.add(frete);</span>
+
+        // ── [N12] Proteção defensiva: valor final nunca negativo ───────────
+<span class="pc bpc" id="L129" title="1 of 2 branches missed.">        if (valorFinal.compareTo(BigDecimal.ZERO) &lt; 0) {              // E11 — P5</span>
+<span class="nc" id="L130">            valorFinal = BigDecimal.ZERO;</span>
+        }
+
+<span class="fc" id="L133">        venda.setValorFinal(valorFinal);</span>
+<span class="fc" id="L134">        return venda;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

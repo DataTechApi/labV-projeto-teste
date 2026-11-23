@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Cliente.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Vendas — Testes Tradicionais (SEM Pairwise / SEM Complexidade Ciclomática)</a> &gt; <a href="index.source.html" class="el_package">com.fatec.vendas.model</a> &gt; <span class="el_source">Cliente.java</span></div><h1>Cliente.java</h1><pre class="source lang-java linenums">package com.fatec.vendas.model;
+
+/**
+ * Representa um cliente do sistema de vendas.
+ *
+ * &lt;p&gt;O {@link TipoCliente} determina os descontos que serão aplicados
+ * pelo {@code DescontoService} ao processar uma venda.&lt;/p&gt;
+ */
+public class Cliente {
+
+    private final Long id;
+    private final String nome;
+    private final TipoCliente tipo;
+
+<span class="fc" id="L15">    public Cliente(Long id, String nome, TipoCliente tipo) {</span>
+<span class="pc bpc" id="L16" title="1 of 2 branches missed.">        if (id == null)        throw new IllegalArgumentException(&quot;ID do cliente não pode ser nulo&quot;);</span>
+<span class="pc bpc" id="L17" title="2 of 4 branches missed.">        if (nome == null || nome.isBlank()) throw new IllegalArgumentException(&quot;Nome do cliente não pode ser vazio&quot;);</span>
+<span class="pc bpc" id="L18" title="1 of 2 branches missed.">        if (tipo == null)      throw new IllegalArgumentException(&quot;Tipo do cliente não pode ser nulo&quot;);</span>
+
+<span class="fc" id="L20">        this.id   = id;</span>
+<span class="fc" id="L21">        this.nome = nome;</span>
+<span class="fc" id="L22">        this.tipo = tipo;</span>
+<span class="fc" id="L23">    }</span>
+
+    // ── Getters ──────────────────────────────────────────────────────────
+<span class="nc" id="L26">    public Long getId()          { return id;   }</span>
+<span class="nc" id="L27">    public String getNome()      { return nome; }</span>
+<span class="fc" id="L28">    public TipoCliente getTipo() { return tipo; }</span>
+
+    @Override
+    public String toString() {
+<span class="nc" id="L32">        return &quot;Cliente{id=&quot; + id + &quot;, nome='&quot; + nome + &quot;', tipo=&quot; + tipo + &quot;}&quot;;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DescontoService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Vendas — Testes Tradicionais (SEM Pairwise / SEM Complexidade Ciclomática)</a> &gt; <a href="index.source.html" class="el_package">com.fatec.vendas.service</a> &gt; <span class="el_source">DescontoService.java</span></div><h1>DescontoService.java</h1><pre class="source lang-java linenums">package com.fatec.vendas.service;
+
+import com.fatec.vendas.model.FormaPagamento;
+import com.fatec.vendas.model.TipoCliente;
+import com.fatec.vendas.model.Venda;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
+/**
+ * Serviço responsável por calcular o percentual de desconto de uma venda.
+ *
+ * ═══════════════════════════════════════════════════════════════════════════
+ * ANÁLISE DE COMPLEXIDADE CICLOMÁTICA — calcularDesconto()
+ * ═══════════════════════════════════════════════════════════════════════════
+ *
+ * Grafo de Fluxo de Controle:
+ *
+ *        [N1] início
+ *          │
+ *          ▼
+ *        [N2] cliente == VIP ?────────── Sim ──▶ [N3] desconto += 10%
+ *          │ Não                                        │
+ *          │◀───────────────────────────────────────────┘
+ *          │
+ *          ▼
+ *        [N4] cliente == REVENDEDOR ?─── Sim ──▶ [N5] desconto += 15%
+ *          │ Não                                        │
+ *          │◀───────────────────────────────────────────┘
+ *          │
+ *          ▼
+ *        [N6] pagamento == PIX ?──────── Sim ──▶ [N7] desconto += 5%
+ *          │ Não                                        │
+ *          │◀───────────────────────────────────────────┘
+ *          │
+ *          ▼
+ *        [N8] pagamento == BOLETO ?───── Sim ──▶ [N9] desconto -= 2%
+ *          │ Não                                        │
+ *          │◀───────────────────────────────────────────┘
+ *          │
+ *          ▼
+ *       [N10] valorBruto &gt; 500 ?──────── Sim ──▶ [N11] desconto += 8%
+ *          │ Não                                        │
+ *          │◀───────────────────────────────────────────┘
+ *          │
+ *          ▼
+ *       [N12] desconto &gt; 25% ?────────── Sim ──▶ [N13] desconto = 25%
+ *          │ Não                                        │
+ *          │◀───────────────────────────────────────────┘
+ *          │
+ *          ▼
+ *       [N14] retorno
+ *
+ * Nós (N)   = 14
+ * Arestas(E) = 20  (14 lineares + 6 desvios de if)
+ * Componentes Conexos (P) = 1
+ *
+ * CC = E - N + 2×P
+ * CC = 20 - 14 + 2×1
+ * CC = 8  ← número mínimo de casos de teste para cobertura completa
+ *
+ * Caminhos Independentes:
+ *   P1 — COMUM, BOLETO,        valor ≤ 100  → desconto = -2%  (teto a 0%)
+ *   P2 — COMUM, CARTAO_CREDITO, valor ≤ 100  → desconto =  0%
+ *   P3 — COMUM, PIX,           valor ≤ 100  → desconto =  5%
+ *   P4 — COMUM, PIX,           valor &gt; 500  → desconto = 13%
+ *   P5 — VIP,   CARTAO_CREDITO, valor ≤ 100  → desconto = 10%
+ *   P6 — VIP,   PIX,           valor &gt; 500  → desconto = 23%
+ *   P7 — REVENDEDOR, PIX,      valor ≤ 100  → desconto = 20%
+ *   P8 — REVENDEDOR, PIX,      valor &gt; 500  → desconto = 25% (teto atingido: 15+5+8=28→25)
+ * ═══════════════════════════════════════════════════════════════════════════
+ */
+<span class="fc" id="L73">public class DescontoService {</span>
+
+    /** Teto máximo de desconto permitido. */
+<span class="fc" id="L76">    public static final BigDecimal DESCONTO_MAXIMO = new BigDecimal(&quot;0.25&quot;);</span>
+
+    /**
+     * Calcula o percentual de desconto a aplicar sobre o valor bruto da venda.
+     *
+     * &lt;p&gt;As regras são acumulativas:&lt;/p&gt;
+     * &lt;ol&gt;
+     *   &lt;li&gt;VIP → +10%&lt;/li&gt;
+     *   &lt;li&gt;REVENDEDOR → +15%&lt;/li&gt;
+     *   &lt;li&gt;PIX → +5%&lt;/li&gt;
+     *   &lt;li&gt;BOLETO → -2% (taxa)&lt;/li&gt;
+     *   &lt;li&gt;Valor &gt; R$ 500 → +8%&lt;/li&gt;
+     *   &lt;li&gt;Teto de 25% (limite máximo)&lt;/li&gt;
+     * &lt;/ol&gt;
+     *
+     * @param venda venda com cliente, forma de pagamento e valor bruto já definidos
+     * @return percentual de desconto entre 0.00 e 0.25 (BigDecimal)
+     */
+    public BigDecimal calcularDesconto(Venda venda) {
+<span class="fc" id="L95">        BigDecimal desconto = BigDecimal.ZERO;</span>
+
+        // ── Regra 1: Desconto por tipo de cliente ─────────────────────────
+        // [N2] Ramo: cliente VIP
+<span class="fc bfc" id="L99" title="All 2 branches covered.">        if (venda.getCliente().getTipo() == TipoCliente.VIP) {        // E1</span>
+<span class="fc" id="L100">            desconto = desconto.add(new BigDecimal(&quot;0.10&quot;));           // N3</span>
+        }
+
+        // [N4] Ramo: cliente REVENDEDOR
+<span class="fc bfc" id="L104" title="All 2 branches covered.">        if (venda.getCliente().getTipo() == TipoCliente.REVENDEDOR) { // E3</span>
+<span class="fc" id="L105">            desconto = desconto.add(new BigDecimal(&quot;0.15&quot;));           // N5</span>
+        }
+
+        // ── Regra 2: Desconto por forma de pagamento ──────────────────────
+        // [N6] Ramo: PIX
+<span class="fc bfc" id="L110" title="All 2 branches covered.">        if (venda.getFormaPagamento() == FormaPagamento.PIX) {         // E5</span>
+<span class="fc" id="L111">            desconto = desconto.add(new BigDecimal(&quot;0.05&quot;));           // N7</span>
+        }
+
+        // [N8] Ramo: BOLETO (taxa)
+<span class="fc bfc" id="L115" title="All 2 branches covered.">        if (venda.getFormaPagamento() == FormaPagamento.BOLETO) {      // E7</span>
+<span class="fc" id="L116">            desconto = desconto.subtract(new BigDecimal(&quot;0.02&quot;));      // N9</span>
+        }
+
+        // ── Regra 3: Desconto por valor do pedido ─────────────────────────
+        // [N10] Ramo: valor acima de R$ 500
+<span class="fc bfc" id="L121" title="All 2 branches covered.">        if (venda.getValorBruto().compareTo(new BigDecimal(&quot;500&quot;)) &gt; 0) { // E9</span>
+<span class="fc" id="L122">            desconto = desconto.add(new BigDecimal(&quot;0.08&quot;));              // N11</span>
+        }
+
+        // ── Regra 4: Teto máximo de 25% ──────────────────────────────────
+        // [N12] Ramo: desconto ultrapassou o teto
+<span class="fc bfc" id="L127" title="All 2 branches covered.">        if (desconto.compareTo(DESCONTO_MAXIMO) &gt; 0) {                // E11</span>
+<span class="fc" id="L128">            desconto = DESCONTO_MAXIMO;                                // N13</span>
+        }
+
+        // Garantir que desconto não seja negativo (BOLETO com sem outros descontos)
+<span class="fc bfc" id="L132" title="All 2 branches covered.">        if (desconto.compareTo(BigDecimal.ZERO) &lt; 0) {</span>
+<span class="fc" id="L133">            desconto = BigDecimal.ZERO;</span>
+        }
+
+<span class="fc" id="L136">        return desconto.setScale(4, RoundingMode.HALF_UP);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Venda.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Vendas — Testes Tradicionais (SEM Pairwise / SEM Complexidade Ciclomática)</a> &gt; <a href="index.source.html" class="el_package">com.fatec.vendas.model</a> &gt; <span class="el_source">Venda.java</span></div><h1>Venda.java</h1><pre class="source lang-java linenums">package com.fatec.vendas.model;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+/**
+ * Entidade central do domínio — representa uma venda realizada.
+ *
+ * &lt;p&gt;Agrega todos os parâmetros que influenciam tanto o Pairwise Testing
+ * quanto a análise de Complexidade Ciclomática:&lt;/p&gt;
+ *
+ * &lt;ul&gt;
+ *   &lt;li&gt;{@code cliente}       — tipo do cliente (COMUM / VIP / REVENDEDOR)&lt;/li&gt;
+ *   &lt;li&gt;{@code formaPagamento} — forma de pagamento (PIX / CARTÃO / BOLETO)&lt;/li&gt;
+ *   &lt;li&gt;{@code regiao}        — região de entrega (SUDESTE / NORDESTE / NORTE)&lt;/li&gt;
+ *   &lt;li&gt;{@code itens}         — lista de itens da venda&lt;/li&gt;
+ * &lt;/ul&gt;
+ *
+ * &lt;p&gt;Os campos {@code valorBruto}, {@code desconto}, {@code frete} e
+ * {@code valorFinal} são calculados pelo {@code VendaService}.&lt;/p&gt;
+ */
+public class Venda {
+
+    private final Long id;
+    private final Cliente cliente;
+    private final FormaPagamento formaPagamento;
+    private final RegiaoEntrega regiao;
+    private final LocalDateTime dataVenda;
+    private final List&lt;ItemVenda&gt; itens;
+
+    // ── Calculados pelo VendaService ──────────────────────────────────────
+<span class="fc" id="L35">    private BigDecimal valorBruto  = BigDecimal.ZERO;</span>
+<span class="fc" id="L36">    private BigDecimal desconto    = BigDecimal.ZERO; // percentual 0.0 – 1.0</span>
+<span class="fc" id="L37">    private BigDecimal frete       = BigDecimal.ZERO;</span>
+<span class="fc" id="L38">    private BigDecimal valorFinal  = BigDecimal.ZERO;</span>
+
+<span class="fc" id="L40">    public Venda(Long id, Cliente cliente, FormaPagamento formaPagamento, RegiaoEntrega regiao) {</span>
+<span class="pc bpc" id="L41" title="1 of 2 branches missed.">        if (id == null)             throw new IllegalArgumentException(&quot;ID da venda não pode ser nulo&quot;);</span>
+<span class="pc bpc" id="L42" title="1 of 2 branches missed.">        if (cliente == null)        throw new IllegalArgumentException(&quot;Cliente não pode ser nulo&quot;);</span>
+<span class="pc bpc" id="L43" title="1 of 2 branches missed.">        if (formaPagamento == null) throw new IllegalArgumentException(&quot;Forma de pagamento não pode ser nula&quot;);</span>
+<span class="pc bpc" id="L44" title="1 of 2 branches missed.">        if (regiao == null)         throw new IllegalArgumentException(&quot;Região de entrega não pode ser nula&quot;);</span>
+
+<span class="fc" id="L46">        this.id             = id;</span>
+<span class="fc" id="L47">        this.cliente        = cliente;</span>
+<span class="fc" id="L48">        this.formaPagamento = formaPagamento;</span>
+<span class="fc" id="L49">        this.regiao         = regiao;</span>
+<span class="fc" id="L50">        this.dataVenda      = LocalDateTime.now();</span>
+<span class="fc" id="L51">        this.itens          = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L52">    }</span>
+
+    // ── Manipulação de itens ──────────────────────────────────────────────
+
+    public void adicionarItem(ItemVenda item) {
+<span class="pc bpc" id="L57" title="1 of 2 branches missed.">        if (item == null) throw new IllegalArgumentException(&quot;Item não pode ser nulo&quot;);</span>
+<span class="fc" id="L58">        this.itens.add(item);</span>
+<span class="fc" id="L59">    }</span>
+
+    public List&lt;ItemVenda&gt; getItens() {
+<span class="fc" id="L62">        return Collections.unmodifiableList(itens);</span>
+    }
+
+    /**
+     * Soma todos os subtotais dos itens (valor sem desconto e sem frete).
+     */
+    public BigDecimal calcularValorBruto() {
+<span class="fc" id="L69">        return itens.stream()</span>
+<span class="fc" id="L70">                    .map(ItemVenda::calcularSubtotal)</span>
+<span class="fc" id="L71">                    .reduce(BigDecimal.ZERO, BigDecimal::add);</span>
+    }
+
+    // ── Getters / Setters ─────────────────────────────────────────────────
+<span class="nc" id="L75">    public Long getId()                      { return id;             }</span>
+<span class="fc" id="L76">    public Cliente getCliente()              { return cliente;        }</span>
+<span class="fc" id="L77">    public FormaPagamento getFormaPagamento() { return formaPagamento; }</span>
+<span class="fc" id="L78">    public RegiaoEntrega getRegiao()         { return regiao;         }</span>
+<span class="nc" id="L79">    public LocalDateTime getDataVenda()      { return dataVenda;      }</span>
+
+<span class="fc" id="L81">    public BigDecimal getValorBruto()  { return valorBruto;  }</span>
+<span class="fc" id="L82">    public BigDecimal getDesconto()    { return desconto;    }</span>
+<span class="fc" id="L83">    public BigDecimal getFrete()       { return frete;       }</span>
+<span class="fc" id="L84">    public BigDecimal getValorFinal()  { return valorFinal;  }</span>
+
+<span class="fc" id="L86">    public void setValorBruto(BigDecimal valorBruto)   { this.valorBruto  = valorBruto;  }</span>
+<span class="fc" id="L87">    public void setDesconto(BigDecimal desconto)        { this.desconto    = desconto;    }</span>
+<span class="fc" id="L88">    public void setFrete(BigDecimal frete)              { this.frete       = frete;       }</span>
+<span class="fc" id="L89">    public void setValorFinal(BigDecimal valorFinal)    { this.valorFinal  = valorFinal;  }</span>
+
+    @Override
+    public String toString() {
+<span class="nc" id="L93">        return &quot;Venda{id=&quot; + id</span>
+<span class="nc" id="L94">             + &quot;, cliente=&quot; + cliente.getNome()</span>
+             + &quot;, pagamento=&quot; + formaPagamento
+             + &quot;, regiao=&quot; + regiao
+             + &quot;, bruto=&quot; + valorBruto
+             + &quot;, desconto=&quot; + desconto
+             + &quot;, frete=&quot; + frete
+             + &quot;, final=&quot; + valorFinal + &quot;}&quot;;
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

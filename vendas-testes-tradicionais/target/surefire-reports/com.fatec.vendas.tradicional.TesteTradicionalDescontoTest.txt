@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.fatec.vendas.tradicional.TesteTradicionalDescontoTest
+-------------------------------------------------------------------------------
+Tests run: 12, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.224 s -- in com.fatec.vendas.tradicional.TesteTradicionalDescontoTest
