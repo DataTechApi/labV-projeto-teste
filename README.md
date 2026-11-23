@@ -364,5 +364,5 @@ Abordagem Tradicional (ad-hoc) =
 
 ## 👨‍💻 Autores
 
-Trabalho desenvolvido para a disciplina de **Laboratório de Verificação e Validação de Software**
-— FATEC | Curso de Análise e Desenvolvimento de Sistemas | Novembro/2026
+Trabalho desenvolvido para a disciplina de **Laboratório de Desenvolviemnto de Banco de Dados V**
+— FATEC | Tecnologia em Banco de Dados | Novembro/2026
